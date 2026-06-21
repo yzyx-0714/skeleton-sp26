@@ -1,3 +1,5 @@
+import edu.princeton.cs.algs4.In;
+
 public class IntList {
     int first;
     IntList rest;
@@ -41,7 +43,12 @@ public class IntList {
      */
     public static IntList incrRecursiveDestructive(IntList L, int x) {
         // TODO: Fill in this code
-        return null;
+        if (L == null){
+            return L;
+        }
+        L.first = L.first + x;
+        incrRecursiveDestructive(L.rest, x);
+        return L;
     }
 
     /*
@@ -55,7 +62,13 @@ public class IntList {
      */
     public int sum() {
         // Optional: Fill in this code
-        return 0;
+        int total = 0;
+        IntList ex = this;
+        while (ex != null) {
+            total += ex.first;
+            ex = ex.rest;
+        }
+        return total;
     }
 
     /**
@@ -63,6 +76,11 @@ public class IntList {
      */
     public void addLast(int x) {
         // Optional: Fill in this code
+        IntList ex = this;
+        while (ex.rest != null) {
+            ex = ex.rest;
+        }
+        ex.rest = new IntList(x, null);
     }
 
     /**
@@ -73,5 +91,16 @@ public class IntList {
      */
     public void addFirst(int x) {
         // Optional: Fill in this code
+        IntList end = this.rest;
+        int first_ed = this.first;
+        this.first = x;
+        this.rest = new IntList(first_ed, end);
+    }
+
+    public static void main() {
+        IntList L = new IntList(5,null);
+        L.rest = new IntList(10,null);
+        L.rest.rest = new IntList(15,null);
+        incrRecursiveDestructive(L, 3);
     }
 }
