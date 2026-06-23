@@ -71,9 +71,11 @@ public class ParticleSimulator {
             for (int y = 0; y < height; y += 1) {
                 Map<Direction, Particle> neighbors = getNeighbors(x, y);
                 particles[x][y].action(neighbors);
+                particles[x][y].decrementLifespan();
             }
         }
     }
+
 
     public boolean validIndex(int x, int y) {
         return x >= 0 && x < width && y >= 0 && y < height;
