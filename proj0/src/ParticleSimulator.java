@@ -13,6 +13,7 @@ public class ParticleSimulator {
             '.', ParticleFlavor.EMPTY,
             'n', ParticleFlavor.FOUNTAIN,
             'z', ParticleFlavor.FLOWER
+//            'b', ParticleFlavor.
     );
 
     public Particle[][] particles;

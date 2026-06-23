@@ -113,7 +113,6 @@ public class Particle {
                     p.flavor = ParticleFlavor.FIRE;
                     p.lifespan = FIRE_LIFESPAN;
                 }
-
             }
         }
     }
