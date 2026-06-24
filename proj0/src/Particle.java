@@ -10,10 +10,12 @@ public class Particle {
     public static final int PLANT_LIFESPAN = 150;
     public static final int FLOWER_LIFESPAN = 75;
     public static final int FIRE_LIFESPAN = 10;
+    public static final int FOUNTAIN_LIFESPAN = 30;
     public static final Map<ParticleFlavor, Integer> LIFESPANS =
             Map.of(ParticleFlavor.FLOWER, FLOWER_LIFESPAN,
                    ParticleFlavor.PLANT, PLANT_LIFESPAN,
-                   ParticleFlavor.FIRE, FIRE_LIFESPAN);
+                   ParticleFlavor.FIRE, FIRE_LIFESPAN,
+                    ParticleFlavor.FOUNTAIN, FOUNTAIN_LIFESPAN);
 
     public Particle(ParticleFlavor flavor) {
         this.flavor = flavor;
@@ -57,7 +59,12 @@ public class Particle {
             int g = 70 + (int) Math.round((141 - 70) * ratio);
             int b = 80 + (int) Math.round((161 - 80) * ratio);
             return new Color(r, g, b);
-
+        } else if (flavor == ParticleFlavor.FOUNTAIN) {
+            double ratio = (double) Math.max(0, Math.min(lifespan, FOUNTAIN_LIFESPAN));
+            int r = 70 + (int) Math.round((120 - 70) * ratio / FOUNTAIN_LIFESPAN);
+            int g = 220 + (int) Math.round((250 - 220) * ratio / FOUNTAIN_LIFESPAN);
+            int b = 235 + (int) Math.round((255 - 235) * ratio / FOUNTAIN_LIFESPAN);
+            return new Color(r, g, b);
         }
         return Color.GRAY;
     }
@@ -117,6 +124,19 @@ public class Particle {
         }
     }
 
+    public void fountain(Map<Direction, Particle> neighbors) {
+        int founlife = FOUNTAIN_LIFESPAN;
+        Direction[] direction = {Direction.LEFT, Direction.RIGHT};
+        Particle p = neighbors.get(Direction.UP);
+        int num = StdRandom.uniformInt(10);
+        if (num >= 2) {
+                return;
+        }
+        if (p.flavor == ParticleFlavor.EMPTY) {
+            p.flavor = ParticleFlavor.FOUNTAIN;p.lifespan = FOUNTAIN_LIFESPAN;
+        }
+    }
+
     public void action(Map<Direction, Particle> neighbors) {
         if (this.flavor == ParticleFlavor.EMPTY) {
             return;
@@ -132,6 +152,9 @@ public class Particle {
         }
         if (this.flavor == ParticleFlavor.FIRE) {
             burn(neighbors);
+        }
+        if (this.flavor == ParticleFlavor.FOUNTAIN) {
+            fountain(neighbors);
         }
     }
 }
