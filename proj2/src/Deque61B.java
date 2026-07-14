@@ -1,3 +1,4 @@
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -5,7 +6,7 @@ import java.util.List;
  * that they should be completed.
  * Edited by Marcus Koh on 1/30/2026 to include getFirst and getLast
  */
-public interface Deque61B<T> {
+public interface Deque61B<T> extends Iterable<T> {
 
     /**
      * Add {@code x} to the front of the deque. Assumes {@code x} is never null.
