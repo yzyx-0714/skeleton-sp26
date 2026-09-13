@@ -1,5 +1,9 @@
+import org.apache.bcel.verifier.statics.IntList;
+
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 public class LinkedListDeque61B<T> implements Deque61B<T> {
     private Node sentinel;
@@ -145,6 +149,7 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
         }
         T first = sentinel.next.item;
         sentinel.next = sentinel.next.next;
+        size--;
         return first;
     }
 
@@ -161,6 +166,7 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
         T first = sentinel.prev.item;
         sentinel.prev = sentinel.prev.prev;
         sentinel.prev.next = sentinel;
+        size--;
         return first;
     }
 
@@ -206,6 +212,54 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
             return ex.item;
         }
         return getRecursive2(index - 1, ex.next);
+    }
+
+    public int count(T item) {
+        if (size > 0) {
+            int num = 0;
+            Node result = sentinel.next;
+            for (int i = 0; i < size; i++) {
+                if (item.equals(result.item)) {
+                    num++;
+                }
+                result = result.next;
+            }
+            return num;
+        }
+        return 0;
+    }
+
+    public void clipEnds(int n) {
+        if (size > 0) {
+            if (2 * n >= size) {
+                sentinel.next = sentinel;
+                sentinel.prev = sentinel;
+                size = 0;
+                return;
+            }
+
+            for (int i = 0; i < n; i++) {
+                this.removeFirst();
+            }
+            for (int i = 0; i < n; i++) {
+                this.removeLast();
+            }
+        }
+    }
+
+    public static Map<Character, Integer> letterCount(String s) {
+        Map<Character, Integer> counts = new HashMap<>();
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            Integer num = 0;
+            if (Character.isLetter(c)) {
+                if (counts.get(c) != null) {
+                    num = counts.get(c);
+                }
+                counts.put(c, num + 1);
+            }
+        }
+        return counts;
     }
 
     public static void main(String[] args) {
