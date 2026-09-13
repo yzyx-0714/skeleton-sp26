@@ -97,6 +97,22 @@ public class IntList {
         this.rest = new IntList(first_ed, end);
     }
 
+    public static IntList doubled(IntList L) {
+        if (L == null) {
+            return null;
+        }
+        IntList newList = new IntList(L.first * 2, null);
+        IntList newNow = newList;
+        IntList theOld = L.rest;
+        while (theOld != null) {
+            IntList exIntList = new IntList(theOld.first * 2, null);
+            newNow.rest = exIntList;
+            theOld = theOld.rest;
+            newNow = exIntList;
+        }
+        return newList;
+    }
+
     public static void main() {
         IntList L = new IntList(5,null);
         L.rest = new IntList(10,null);
