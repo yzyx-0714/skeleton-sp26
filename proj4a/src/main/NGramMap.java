@@ -1,102 +1,182 @@
 package main;
 
+import edu.princeton.cs.algs4.In;
+
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NavigableMap;
 
 import static main.TimeSeries.MAX_YEAR;
 import static main.TimeSeries.MIN_YEAR;
 
 /**
- * An object that provides utility methods for making queries on the
- * Google NGrams dataset (or a subset thereof).
+ * 一个提供对Google NGrams数据集（或其子集）进行查询的工具类。
  *
- * An NGramMap stores pertinent data from a "words file" and a "counts
- * file". It is not a map in the strict sense, but it does provide additional
- * functionality.
+ * NGramMap存储了"words文件"和"counts文件"中的关键数据。
+ * 严格来说它不是传统意义上的Map，但提供了额外的功能。
  *
  * @author Josh Hug
  */
 public class NGramMap {
-
-    // TODO: Add any necessary static/instance variables.
-
+    // TODO: 添加必要的静态/实例变量
+    private Map<String, TimeSeries> wordCount;
+    private TimeSeries totalWords;
     /**
-     * Constructs an NGramMap from WORDHISTORYFILENAME and YEARHISTORYFILENAME.
+     * 通过WORDHISTORYFILENAME（词频历史文件）和YEARHISTORYFILENAME（年份统计文件）构建NGramMap
      */
     public NGramMap(String wordHistoryFilename, String yearHistoryFilename) {
-        // TODO: Fill in this constructor. See the "NGramMap Tips" section of the spec for help.
+        wordCount = new HashMap<>();
+        totalWords = new TimeSeries();
+
+        In in = new In(wordHistoryFilename);
+        while (!in.isEmpty()) {
+
+            String word = in.readString();
+            Integer year = in.readInt();
+            Double count = in.readDouble();
+            in.readInt();
+
+            TimeSeries ts = wordCount.get(word);
+            if (ts == null) {
+                ts = new TimeSeries();
+                wordCount.put(word, ts);
+            }
+            ts.put(year, count);
+        }
+
+        in = new In(yearHistoryFilename);
+        while (!in.isEmpty()) {
+            String nextLine = in.readLine();
+            String[] line = nextLine.split(",");
+            Integer year = Integer.parseInt(line[0]);
+            Double total = Double.parseDouble(line[1]);
+            totalWords.put(year, total);
+        }
     }
 
     /**
-     * Provides the history of WORD between STARTYEAR and ENDYEAR, inclusive of both ends. The
-     * returned TimeSeries should be a copy, not a link to this NGramMap's TimeSeries. In other
-     * words, changes made to the object returned by this function should not also affect the
-     * NGramMap. This is also known as a "defensive copy". If the word is not in the data files,
-     * returns an empty TimeSeries.
+     * 返回WORD在STARTYEAR到ENDYEAR年份区间（含首尾）的词频历史记录。
+     * 返回的TimeSeries应为副本而非原始数据的引用（即"防御性拷贝"）。
+     * 换言之，对该方法返回对象的修改不应影响NGramMap内部数据。
+     * 若单词不存在于数据文件中，返回空TimeSeries。
      */
     public TimeSeries countHistory(String word, int startYear, int endYear) {
-        // TODO: Fill in this method.
-        return null;
+        TimeSeries ts = wordCount.get(word);
+        if (ts == null) {
+            return new TimeSeries();
+        }
+        ts = new TimeSeries(ts, startYear, endYear);
+        return ts;
     }
 
     /**
-     * Provides the history of WORD. The returned TimeSeries should be a copy, not a link to this
-     * NGramMap's TimeSeries. In other words, changes made to the object returned by this function
-     * should not also affect the NGramMap. This is also known as a "defensive copy". If the word
-     * is not in the data files, returns an empty TimeSeries.
+     * 返回WORD的完整词频历史记录（全时间范围）。
+     * 返回的TimeSeries应为防御性拷贝。
+     * 若单词不存在于数据文件中，返回空TimeSeries。
      */
     public TimeSeries countHistory(String word) {
-        // TODO: Fill in this method.
-        return null;
+        TimeSeries ts = wordCount.get(word);
+        if (ts == null) {
+            return new TimeSeries();
+        }
+        TimeSeries newTs = new TimeSeries();
+        newTs.putAll(ts);
+        return newTs;
     }
 
     /**
-     * Returns a defensive copy of the total number of words recorded per year in all volumes.
+     * 返回每年所有语料库中记录的总词频的防御性拷贝
      */
     public TimeSeries totalCountHistory() {
-        // TODO: Fill in this method.
-        return null;
+        TimeSeries ts = new TimeSeries();
+        ts.putAll(totalWords);
+        return ts;
     }
 
     /**
-     * Provides a TimeSeries containing the relative frequency per year of WORD between STARTYEAR
-     * and ENDYEAR, inclusive of both ends. If the word is not in the data files, returns an empty
-     * TimeSeries.
+     * 返回WORD在STARTYEAR到ENDYEAR年份区间（含首尾）的相对词频时间序列。
+     * 相对词频 = 该词年频次 / 当年总词频
+     * 若单词不存在，返回空TimeSeries。
      */
     public TimeSeries weightHistory(String word, int startYear, int endYear) {
-        // TODO: Fill in this method.
-        return null;
+        TimeSeries wordTs = wordCount.get(word);
+        if (wordTs == null) {
+            return new TimeSeries();
+        }
+        TimeSeries totalTs = new TimeSeries();
+        for (int year : wordTs.keySet()) {
+            totalTs.put(year, wordTs.get(year) / totalWords.get(year));
+        }
+        return new TimeSeries(totalTs, startYear, endYear);
     }
 
     /**
-     * Provides a TimeSeries containing the relative frequency per year of WORD compared to all
-     * words recorded in that year. If the word is not in the data files, returns an empty
-     * TimeSeries.
+     * 返回WORD相对于各年总词频的相对词频时间序列。
+     * 若单词不存在，返回空TimeSeries。
      */
     public TimeSeries weightHistory(String word) {
-        // TODO: Fill in this method.
-        return null;
+        TimeSeries wordTs = wordCount.get(word);
+        if (wordTs == null) {
+            return new TimeSeries();
+        }
+        TimeSeries totalTs = new TimeSeries();
+        for (int year : wordTs.keySet()) {
+            totalTs.put(year, wordTs.get(year) / totalWords.get(year));
+        }
+        return totalTs;
     }
 
     /**
-     * Provides the summed relative frequency per year of all words in WORDS between STARTYEAR and
-     * ENDYEAR, inclusive of both ends. If a word does not exist in this time frame, ignore it
-     * rather than throwing an exception.
+     * 返回WORDS集合中所有单词在STARTYEAR到ENDYEAR年份区间的相对词频总和。
+     * 若单词在该时间段不存在，则忽略而非抛出异常。
      */
     public TimeSeries summedWeightHistory(Collection<String> words,
                                           int startYear, int endYear) {
-        // TODO: Fill in this method.
-        return null;
+        TimeSeries Ts = new TimeSeries();
+        for (String word : words) {
+            TimeSeries wordTs = wordCount.get(word);
+            if (wordTs == null) {
+                continue;
+            }
+            wordTs = new TimeSeries(wordTs, startYear, endYear);
+            for (int year : wordTs.keySet()) {
+                if (Ts.get(year) == null) {
+                    Ts.put(year, wordTs.get(year));
+                } else {
+                    Ts.put(year, Ts.get(year) + wordTs.get(year));
+                }
+            }
+        }
+        for (int year : Ts.keySet()) {
+            Ts.put(year, Ts.get(year) / totalWords.get(year));
+        }
+        return Ts;
     }
 
     /**
-     * Returns the summed relative frequency per year of all words in WORDS. If a word does not
-     * exist in this time frame, ignore it rather than throwing an exception.
+     * 返回WORDS集合中所有单词的相对词频总和（全时间范围）。
+     * 若单词不存在，则忽略而非抛出异常。
      */
     public TimeSeries summedWeightHistory(Collection<String> words) {
-        // TODO: Fill in this method.
-        return null;
-    }
 
-    // TODO: Add any private helper methods.
-    // TODO: Remove all TODO comments before submitting.
+        TimeSeries Ts = new TimeSeries();
+        for (String word : words) {
+            TimeSeries wordTs = wordCount.get(word);
+            if (wordTs == null) {
+                continue;
+            }
+            for (int year : wordTs.keySet()) {
+                if (Ts.get(year) == null) {
+                    Ts.put(year, wordTs.get(year));
+                } else {
+                    Ts.put(year, Ts.get(year) + wordTs.get(year));
+                }
+            }
+        }
+        for (int year : Ts.keySet()) {
+            Ts.put(year, Ts.get(year) / totalWords.get(year));
+        }
+        return Ts;
+    }
 }
