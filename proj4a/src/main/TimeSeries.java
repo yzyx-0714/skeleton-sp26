@@ -33,16 +33,16 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      */
     public TimeSeries(TimeSeries ts, int startYear, int endYear) {
         super();
-        //方法一，直接使用TreeMap的方法
+        // 方法一，直接使用TreeMap的方法
         NavigableMap<Integer, Double> newts = ts.subMap(startYear, true, endYear, true);
         this.putAll(newts);
 
-        //方法二， for循环挨个put入新对象
-//        for (int year : ts.keySet()) {
-//            if (year >= startYear && year <= endYear) {
-//                this.put(year, ts.get(year));
-//            }
-//        }
+        // 方法二， for循环挨个put入新对象
+        // for (int year : ts.keySet()) {
+        // if (year >= startYear && year <= endYear) {
+        // this.put(year, ts.get(year));
+        // }
+        // }
     }
 
     /**
