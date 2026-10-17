@@ -8,7 +8,9 @@ public class AutograderBuddy {
     public static NgordnetQueryHandler getHyponymsHandler(
             String wordHistoryFile, String yearHistoryFile,
             String synsetFile, String hyponymFile) {
-
-        throw new RuntimeException("Please fill out AutograderBuddy.java!");
+        WordNet wordNet = new WordNet(hyponymFile, synsetFile);
+        NGramMap ngram = new NGramMap(wordHistoryFile, yearHistoryFile);
+        return new HyponymsHandler(wordNet, ngram);
+//        throw new RuntimeException("Please fill out AutograderBuddy.java!");
     }
 }

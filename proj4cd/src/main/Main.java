@@ -31,10 +31,11 @@ public class Main {
     }
     public static void main(String[] args) {
         NgordnetServer hns = new NgordnetServer();
-
+        WordNet wordnet = new WordNet(HYPONYMS_SIZE16_FILE, SYNSETS_SIZE16_FILE);
+        NGramMap ngram = new NGramMap(WORD_HISTORY_EECS_FILE, YEAR_HISTORY_FILE);
         hns.startUp();
         // TODO: modify HyponymsHandler
-        // hns.register("hyponyms", new HyponymsHandler());
+         hns.register("hyponyms", new HyponymsHandler(wordnet, ngram));
 
         System.out.println("Finished server startup! Visit http://localhost:4567/ngordnet.html");
     }
