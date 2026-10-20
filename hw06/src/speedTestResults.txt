@@ -1,0 +1,16 @@
+--Stack Overflow -- couldn't add 100000 strings of length 100.
+class BSTMap: 0.10 sec
+Java's Built-in TreeMap: 0.10 sec
+Java's Built-in HashMap: 0.07 sec
+
+
+--Stack Overflow -- couldn't add 1000000 strings of length 100.
+class BSTMap: 1.56 sec
+Java's Built-in TreeMap: 1.40 sec
+Java's Built-in HashMap: 0.77 sec
+
+
+--Stack Overflow -- couldn't add 10000000 strings of length 100.
+class BSTMap: 22.30 sec
+Java's Built-in TreeMap: 21.28 sec
+Java's Built-in HashMap: 7.68 sec
