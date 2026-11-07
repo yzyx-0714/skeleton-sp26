@@ -1,6 +1,6 @@
 public class RedBlackTree<T extends Comparable<T>> {
 
-    /* Root of the tree. */
+    /* 树的根节点。 */
     RBTreeNode<T> root;
 
     static class RBTreeNode<T> {
@@ -11,8 +11,7 @@ public class RedBlackTree<T extends Comparable<T>> {
         RBTreeNode<T> right;
 
         /**
-         * Creates a RBTreeNode with item ITEM and color depending on ISBLACK
-         * value.
+         * 创建一个红黑树节点，元素为 ITEM，颜色由 ISBLACK 的值决定。
          * @param isBlack
          * @param item
          */
@@ -21,8 +20,8 @@ public class RedBlackTree<T extends Comparable<T>> {
         }
 
         /**
-         * Creates a RBTreeNode with item ITEM, color depending on ISBLACK
-         * value, left child LEFT, and right child RIGHT.
+         * 创建一个红黑树节点，元素为 ITEM，颜色由 ISBLACK 的值决定，
+         * 左子节点为 LEFT，右子节点为 RIGHT。
          * @param isBlack
          * @param item
          * @param left
@@ -38,48 +37,61 @@ public class RedBlackTree<T extends Comparable<T>> {
     }
 
     /**
-     * Creates an empty RedBlackTree.
+     * 创建一棵空的红黑树。
      */
     public RedBlackTree() {
         root = null;
     }
 
     /**
-     * Flips the color of node and its children. Assume that NODE has both left
-     * and right children
+     * 翻转节点及其子节点的颜色。假设 NODE 同时拥有左子节点和右子节点。
      * @param node
      */
     void flipColors(RBTreeNode<T> node) {
-        // TODO: YOUR CODE HERE
+        // TODO: 在此处编写你的代码
+
+        node.isBlack = !node.isBlack;
+        node.left.isBlack = !node.left.isBlack;
+        node.right.isBlack = !node.right.isBlack;
     }
 
     /**
-     * Rotates the given node to the right. Returns the new root node of
-     * this subtree. For this implementation, make sure to swap the colors
-     * of the new root and the old root!
+     * 将给定节点向右旋转。返回该子树新的根节点。
+     * 在此实现中，请确保交换新根节点和旧根节点的颜色！
      * @param node
      * @return
      */
     RBTreeNode<T> rotateRight(RBTreeNode<T> node) {
-        // TODO: YOUR CODE HERE
-        return null;
+        // TODO: 在此处编写你的代码
+        RBTreeNode newNode = node.left;
+        RBTreeNode sonRight = node.left.right;
+        node.left.right = node;
+        node.left = sonRight;
+        newNode.isBlack = node.isBlack;
+        node.isBlack = false;
+        return newNode;
     }
 
     /**
-     * Rotates the given node to the left. Returns the new root node of
-     * this subtree. For this implementation, make sure to swap the colors
-     * of the new root and the old root!
+     * 将给定节点向左旋转。返回该子树新的根节点。
+     * 在此实现中，请确保交换新根节点和旧根节点的颜色！
      * @param node
      * @return
      */
     RBTreeNode<T> rotateLeft(RBTreeNode<T> node) {
-        // TODO: YOUR CODE HERE
-        return null;
+        // TODO: 在此处编写你的代码
+        RBTreeNode newNode = node.right;
+        RBTreeNode sonLeft = node.right.left;
+        node.right.left = node;
+        node.right = sonLeft;
+        newNode.isBlack = node.isBlack;
+        node.isBlack = false;
+        return newNode;
     }
 
     /**
-     * Helper method that returns whether the given node is red. Null nodes (children or leaf
-     * nodes) are automatically considered black.
+     * 辅助方法，返回给定节点是否为红色。
+     * 空节点（子节点或叶子节点）自动视为黑色。
      * @param node
      * @return
      */
@@ -88,7 +100,7 @@ public class RedBlackTree<T extends Comparable<T>> {
     }
 
     /**
-     * Inserts the item into the Red Black Tree. Colors the root of the tree black.
+     * 将元素插入红黑树。将树的根节点染为黑色。
      * @param item
      */
     public void insert(T item) {
@@ -96,26 +108,47 @@ public class RedBlackTree<T extends Comparable<T>> {
         root.isBlack = true;
     }
 
-    /**
-     * Helper method to insert the item into this Red Black Tree. Comments have been provided to help break
-     * down the problem. For each case, consider the scenario needed to perform those operations.
-     * Make sure to also review the other methods in this class!
+    /**dd
+     * 将元素插入此红黑树的辅助方法。
+     * 已提供注释以帮助分解问题。对于每种情况，请考虑执行相应操作所需的场景。
+     * 请务必同时复习本类中的其他方法！
      * @param node
      * @param item
      * @return
      */
     private RBTreeNode<T> insertHelper(RBTreeNode<T> node, T item) {
-        // TODO: Insert (return) new red leaf node.
+        // TODO: 插入（返回）新的红色叶子节点。
+         if (node == null) {
+            //到底了，new对象添加
+            return new RBTreeNode<>(false, item);
+        }
 
-        // TODO: Handle normal binary search tree insertion.
+        // TODO: 处理普通的二叉搜索树插入。
+        int cmp = item.compareTo(node.item);
+        if (cmp < 0) {
+            //去左
+            node.left = insertHelper(node.left, item);
+        } else if (cmp > 0) {
+            //去右
+            node.right = insertHelper(node.right, item);
+        }
 
-        // TODO: Rotate left operation
+        // TODO: 左旋操作
+        if (isRed(node.right) && !isRed(node.left)) {
+            node = rotateLeft(node);
+        }
 
-        // TODO: Rotate right operation
+        // TODO: 右旋操作
+        if (isRed(node.left) && isRed(node.left.left)) {
+            node = rotateRight(node);
+        }
 
-        // TODO: Color flip
+        // TODO: 颜色翻转
+        if (isRed(node.left) && isRed(node.right)) {
+            flipColors(node);
+        }
 
-        return null; //fix this return statement
+        return node; //修复此返回语句
     }
 
 }
